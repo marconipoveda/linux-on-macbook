@@ -1,0 +1,77 @@
+# linux-on-macbook
+
+Make Linux run well on Intel MacBooks. Each fix here was worked out and verified on a real machine.
+Every fix is a **Claude skill** (Claude can apply it for you) and also a set of plain scripts you can
+run yourself.
+
+## Status by model
+
+✅ works out of the box · 🔧 works after a fix here · ⚠️ partial · ❌ not working · ❔ not tested yet
+
+| Component | [MacBookPro13,1](models/MacBookPro13,1.md)<br>13" 2016 | MacBookPro11,x<br>15" Mid 2015 |
+|---|---|---|
+| Mac-style keyboard shortcuts | 🔧 [keyd](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | ❔ |
+| Trackpad: no tap-to-click, two-finger right-click | 🔧 [settings](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
+| Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | ❔ |
+| Suspend / resume | 🔧 s2idle (skill coming) | ❔ |
+| Wi-Fi | ⚠️ | ❔ |
+| Bluetooth | ❌ in progress | ❔ |
+| Audio | ❔ | ❔ |
+| USB-C data after sleep | ❌ | n/a |
+
+Each model page has the full component table, the hardware IDs, and the kernel log notes.
+
+## Skills
+
+| Skill | What it does |
+|---|---|
+| [macbook-hardware-scan](plugins/macbook-linux/skills/macbook-hardware-scan) | Scans a Mac and writes its model page: what works, what doesn't, which fix to use |
+| [mac-keyboard-shortcuts](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | Cmd+C/V, Cmd+Tab, Cmd+Space, Option+arrows… on any distro and desktop, using keyd |
+| [facetimehd-webcam](plugins/macbook-linux/skills/facetimehd-webcam) | FaceTime HD camera (2013–2017 Macs): facetimehd driver via DKMS + firmware from Apple's update |
+| [mac-trackpad](plugins/macbook-linux/skills/mac-trackpad) | No accidental tap-clicks, two-finger right-click, macOS-like pointer feel |
+
+Coming next: suspend, Bluetooth.
+
+## Install (Claude Code)
+
+```
+/plugin marketplace add marconipoveda/linux-on-macbook
+/plugin install macbook-linux@linux-on-macbook
+```
+
+Then just ask, for example: *"scan this Mac"*, or *"make my keyboard work like macOS"*.
+
+## Use without Claude
+
+Every skill folder has a `SKILL.md` that reads as a step-by-step guide, plus `scripts/` you can run directly.
+Example, keyboard:
+
+```bash
+cd plugins/macbook-linux/skills/mac-keyboard-shortcuts
+bash scripts/detect.sh
+bash scripts/make-config.sh gnome > mac-keys.conf        # or kde | other
+sudo bash scripts/install.sh "$PWD/mac-keys.conf"
+bash scripts/gnome-shortcuts.sh                          # GNOME only
+```
+
+## Adding your Mac
+
+1. Run `bash plugins/macbook-linux/skills/macbook-hardware-scan/scripts/scan.sh > scan.txt`. It's read-only, and MAC addresses and the hostname are masked.
+2. Create `models/<ProductName>.md` from `plugins/macbook-linux/skills/macbook-hardware-scan/assets/model-template.md`. Or let Claude do steps 1–2 with the scan skill.
+3. Add a column to the table above and open a pull request.
+
+When a fix works on your model, add a short `references/models/<ProductName>.md` in that skill with whatever was different.
+
+## Layout
+
+```
+models/                     one page per Mac model (status + notes)
+plugins/macbook-linux/      Claude Code plugin
+  skills/<component>/       one skill per problem; works across models
+    references/models/      per-model quirks for that fix
+.claude-plugin/             marketplace manifest
+```
+
+## License
+
+MIT. Third-party drivers (keyd, facetimehd) and Apple firmware are not included. The skills download them from their original sources.

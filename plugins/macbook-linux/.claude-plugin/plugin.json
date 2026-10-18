@@ -1,0 +1,20 @@
+{
+  "name": "macbook-linux",
+  "version": "0.1.0",
+  "description": "Make Linux work well on Intel MacBooks: hardware scan, Mac-style keyboard shortcuts, and (coming) webcam, sleep and Bluetooth fixes.",
+  "license": "MIT",
+  "keywords": [
+    "macbook",
+    "linux",
+    "ubuntu",
+    "keyd",
+    "facetimehd",
+    "hardware"
+  ],
+  "author": {
+    "name": "marconipoveda",
+    "url": "https://github.com/marconipoveda"
+  },
+  "homepage": "https://github.com/marconipoveda/linux-on-macbook",
+  "repository": "https://github.com/marconipoveda/linux-on-macbook"
+}

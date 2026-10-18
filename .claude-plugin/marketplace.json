@@ -1,0 +1,17 @@
+{
+  "name": "linux-on-macbook",
+  "owner": {
+    "name": "marconipoveda",
+    "url": "https://github.com/marconipoveda"
+  },
+  "metadata": {
+    "description": "Claude skills that make Linux run well on Intel MacBooks: keyboard, webcam, sleep, Bluetooth and more, with per-model notes."
+  },
+  "plugins": [
+    {
+      "name": "macbook-linux",
+      "source": "./plugins/macbook-linux",
+      "description": "Skills for scanning a MacBook's hardware under Linux and fixing what doesn't work out of the box."
+    }
+  ]
+}

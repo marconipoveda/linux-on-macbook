@@ -1,0 +1,23 @@
+{
+  "skill_name": "mac-keyboard-shortcuts",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just put Fedora 41 KDE Plasma on my old 2015 MacBook Air and I keep hitting cmd+c expecting copy lol. can you make the keyboard work like macOS? cmd+tab too",
+      "expected_output": "Fedora+KDE: keyd via COPR, Alt-based app switcher, KRunner on Cmd+Space, root step handed to user",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Tengo Ubuntu 24.04 con GNOME en una MacBook Pro 2017, teclado en espa\u00f1ol (layout es). Quiero usar cmd+c, cmd+v, cmd+tab como en la Mac. Uso mucho la terminal.",
+      "expected_output": "Ubuntu+GNOME, es layout: right Option kept as AltGr, keyd.rvaiya/restart, gnome Super+Space rebind, terminal caveat explained (in Spanish)",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Debian 13 with GNOME on Wayland, MacBook Pro 2019 (T2). I use two input sources, us and ru, and switch between them a lot. Please set up mac-style shortcuts, and I already tried Kinto a while ago, not sure if it's still installed.",
+      "expected_output": "Debian+GNOME, multiple sources moved to Ctrl+Space, checks/asks about leftover Kinto, keyd.rvaiya",
+      "files": []
+    }
+  ]
+}
