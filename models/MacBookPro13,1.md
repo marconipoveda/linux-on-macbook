@@ -23,11 +23,12 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Fans / sensors (SMC) | Apple SMC | applesmc | ⚠️ | Readable. No fan daemon by default (`mbpfan` optional) |
 | Ambient light sensor | via applesmc | applesmc | ⚠️ | Readable, not wired into auto-brightness |
 | Battery | bq20z451 | ACPI | ✅ | Health and cycle count readable |
-| Suspend / resume | | | 🔧 | **s2idle only**; deep S3 never resumes reliably. Needs NVMe and Thunderbolt kept out of D3cold, and wake sources limited to the lid and EC. To wake, open the lid, then press the power button. Skill coming |
+| Suspend / resume | | | 🔧 | **s2idle only**; deep S3 never resumes reliably. Needs NVMe and Thunderbolt kept out of D3cold, and wake sources limited to the lid and EC. To wake, open the lid, then press the power button. [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) |
 
 ## Known issues and fixes
 
 ### Suspend (verified 2026-10-18)
+Applied with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) skill, in order; see its notes for this model.
 - `mem_sleep_default=s2idle` on the kernel command line
 - udev rules keeping the NVMe and the Thunderbolt bridges out of D3cold
 - a boot-time service that leaves only `LID0` and `EC` enabled in `/proc/acpi/wakeup` (XHC1/2, RP01/05/09/10, ARPT and SPIT disabled)
