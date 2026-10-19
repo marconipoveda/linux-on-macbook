@@ -18,7 +18,7 @@ run yourself.
 | Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ❔ |
 | Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
 | Audio: speakers, internal mic, headphones | ✅ | ❔ |
-| Audio: headset mic (jack) | ❌ driver limitation | ❔ |
+| Audio: headset mic (jack) | ❌ driver limitation, use a USB headset (✅) | ❔ |
 | USB-C data after sleep | ❌ | n/a |
 
 Each model page has the full component table, the hardware IDs, and the kernel log notes.
