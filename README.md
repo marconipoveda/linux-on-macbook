@@ -11,7 +11,8 @@ run yourself.
 | Component | [MacBookPro13,1](models/MacBookPro13,1.md)<br>13" 2016 | MacBookPro11,x<br>15" Mid 2015 |
 |---|---|---|
 | Mac-style keyboard shortcuts | 🔧 [keyd](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | ❔ |
-| Trackpad: no tap-to-click, two-finger right-click | 🔧 [settings](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
+| Trackpad: clicking, pointer and scroll speed | 🔧 [settings + scroll fix](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
+| macOS cursor | 🔧 [apple_cursor](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
 | Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | ❔ |
 | Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
 | Wi-Fi | ⚠️ | ❔ |
@@ -29,7 +30,7 @@ Each model page has the full component table, the hardware IDs, and the kernel l
 | [macbook-sleep](plugins/macbook-linux/skills/macbook-sleep) | Suspend/resume: NVMe and Thunderbolt D3cold, wake sources, s2idle, resume hooks, one fix at a time |
 | [mac-keyboard-shortcuts](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | Cmd+C/V, Cmd+Tab, Cmd+Space, Option+arrows… on any distro and desktop, using keyd |
 | [facetimehd-webcam](plugins/macbook-linux/skills/facetimehd-webcam) | FaceTime HD camera (2013–2017 Macs): facetimehd driver via DKMS + firmware from Apple's update |
-| [mac-trackpad](plugins/macbook-linux/skills/mac-trackpad) | No accidental tap-clicks, two-finger right-click, macOS-like pointer feel |
+| [mac-trackpad](plugins/macbook-linux/skills/mac-trackpad) | No accidental tap-clicks, two-finger right-click, pointer speed, slower two-finger scrolling (GNOME has no setting), browser glide, macOS cursor |
 
 Coming next: Bluetooth.
 

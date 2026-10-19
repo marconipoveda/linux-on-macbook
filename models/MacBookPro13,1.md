@@ -13,7 +13,7 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Display / backlight | 2560×1600 eDP | i915, acpi_video | ⚠️ | Backlight runs through `acpi_video0` (0–90), not `intel_backlight` |
 | Storage | Apple SSD AP0256J, NVMe `106b:2003` | nvme | ✅ | Must stay out of D3cold for sleep to work, see Suspend |
 | Keyboard | Apple SPI Keyboard (ACPI APP000D) | applespi | ✅ | Mac-style shortcuts: 🔧 [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-keyboard-shortcuts) |
-| Trackpad | Apple SPI Force Touch | applespi | 🔧 | Mac-style clicking via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad) (tap-to-click off, two-finger right-click). No haptics. Can come back garbled after resume until `applespi` is reloaded (fixed by the sleep hook) |
+| Trackpad | Apple SPI Force Touch | applespi | 🔧 | Mac-style via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad): tap-to-click off, two-finger right-click, scroll factor 2 (hwdb), adaptive at speed 0.4, macOS cursor. No haptics. Can come back garbled after resume until `applespi` is reloaded (fixed by the sleep hook) |
 | Keyboard backlight | `spi::kbd_backlight` | applespi | ✅ | |
 | Audio (speakers / mic / jack) | Cirrus Logic CS8409 / CS42L83 | snd_hda_codec_cs8409 | ❔ | Codec detected and PipeWire sink present. Upstream support for this model has been incomplete |
 | Wi-Fi | Broadcom BCM4350 `14e4:43a3` | brcmfmac | ⚠️ | Connects. Board-specific NVRAM/CLM files are missing. If `broadcom-sta` (wl) is installed, remove it: it fails to load and taints the kernel |
@@ -38,7 +38,7 @@ Applied with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) 
 `facetimehd` 0.7.2 via DKMS. Firmware 5.60.0 extracted from Apple's macOS 10.12.6 update into `/usr/lib/firmware/facetimehd/`. Shows up as `/dev/video0` and in PipeWire.
 
 ### Trackpad (verified 2026-10-18)
-GNOME: `tap-to-click false` and `click-method fingers`, applied by the [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad) skill.
+With the [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad) skill: `tap-to-click false`, `click-method fingers`. Two-finger scrolling was far too fast, and GNOME has no setting for it, so the trackpad resolution is doubled through hwdb (96/94 → 192/188). The pointer speed was then raised to compensate, ending on adaptive at speed 0.4. The macOS cursor theme is apple_cursor v2.0.1.
 
 ### Keyboard shortcuts (verified 2026-10-18)
 keyd 2.5 with the [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-keyboard-shortcuts) skill. On Ubuntu the binary is `keyd.rvaiya`.
