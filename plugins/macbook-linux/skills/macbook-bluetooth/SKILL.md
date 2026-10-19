@@ -37,7 +37,7 @@ sudo bash scripts/install.sh    # then shut down completely, wait 10 s, power on
 - Other distros: [leifliddy/macbook12-bluetooth-driver](https://github.com/leifliddy/macbook12-bluetooth-driver) applies the same patch against kernel.org sources. Use one or the other, never both.
 - Undo: `sudo bash scripts/uninstall.sh`, then reboot.
 
-**Be honest about results.** On MacBookPro13,1 the patch reduced failures but didn't make them disappear (first 5 boots: 4 ok, 1 fail, and that one failure coincided with a `wl` crash). Report counts, not "fixed", until at least 5–10 boots in a row come up clean.
+**Be honest about results.** On MacBookPro13,1 the patch reduced failures but didn't make them disappear (first 6 boots: 5 ok, 1 fail, and that one failure coincided with a `wl` crash; 3 of 3 ok since `wl` was removed). Report counts, not "fixed", until at least 5–10 boots in a row come up clean.
 
 ## 3. When a boot fails anyway
 
