@@ -17,7 +17,7 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Keyboard backlight | `spi::kbd_backlight` | applespi | ✅ | |
 | Audio (speakers / mic / jack) | Cirrus Logic CS8409 / CS42L83 | snd_hda_codec_cs8409 | ❔ | Codec detected and PipeWire sink present. Upstream support for this model has been incomplete |
 | Wi-Fi | Broadcom BCM4350 `14e4:43a3` | brcmfmac | ✅ | Works on brcmfmac. Board-specific NVRAM/CLM files are missing (normal). A leftover `broadcom-sta` (wl) crashed every boot and was removed with [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi) |
-| Bluetooth | Broadcom BCM4350C0 over UART (ACPI `BCM2E7C`) | hci_uart_bcm (patched, DKMS) | ⚠️ | Intermittent with the stock driver (~1 in 3 boots fail, `0xfc18 tx timeout`). Patched driver via [macbook-bluetooth](../plugins/macbook-linux/skills/macbook-bluetooth): 5 ok / 1 fail so far (the fail was during a wl crash); 3 of 3 ok since wl was removed. Still verifying. For Bluetooth audio, use 5 GHz Wi-Fi |
+| Bluetooth | Broadcom BCM4350C0 over UART (ACPI `BCM2E7C`) | hci_uart_bcm (patched, DKMS) | 🔧 | Stock driver failed ~1 in 3 boots (`0xfc18 tx timeout`). Fixed with the patched driver from [macbook-bluetooth](../plugins/macbook-linux/skills/macbook-bluetooth) plus removing broadcom-sta (wl) with [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi): 5 of 5 clean boots since. For Bluetooth audio, use 5 GHz Wi-Fi |
 | Webcam | FaceTime HD `14e4:1570` | facetimehd (DKMS) | 🔧 | Works with the out-of-tree driver and extracted firmware: 1296×736 at 30 fps, via [facetimehd-webcam](../plugins/macbook-linux/skills/facetimehd-webcam) |
 | Thunderbolt 3 / USB-C | Intel Alpine Ridge JHL6540 | thunderbolt, xhci_hcd | ⚠️ | Charging always works. USB-C **data** stops after the first sleep until reboot, because Apple firmware powers the controller off. A PCI rescan does not bring it back. Unsolved |
 | Fans / sensors (SMC) | Apple SMC | applesmc | ⚠️ | Readable. No fan daemon by default (`mbpfan` optional) |
@@ -34,8 +34,8 @@ Applied with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) 
 - a boot-time service that leaves only `LID0` and `EC` enabled in `/proc/acpi/wakeup` (XHC1/2, RP01/05/09/10, ARPT and SPIT disabled)
 - a `system-sleep` hook that reloads `applespi` after resume and re-applies the wake settings
 
-### Bluetooth (in progress, 2026-10-18)
-Patched `hci_uart` (Apple BTLP wake call removed), installed through DKMS. Failures happen more after warm reboots than after power-offs. Audio tips ("Connect" button = disconnected, `Stream End Point in Use` → reconnect, 2.4 GHz coexistence) are in the skill's `references/audio.md`.
+### Bluetooth (verified 2026-10-18)
+Two changes together: the patched `hci_uart` (Apple BTLP wake call removed) through DKMS, and removing broadcom-sta (wl). After both: 5 of 5 clean boots, including warm restarts. Five boots can't tell which change mattered more: the patch alone gave 1 failure, in a boot where wl crashed. Before: about 1 in 3 boots failed, more often after warm reboots. Audio tips ("Connect" button = disconnected, `Stream End Point in Use` → reconnect, 2.4 GHz coexistence) are in the skill's `references/audio.md`.
 
 ### Webcam (verified 2026-10-18)
 `facetimehd` 0.7.2 via DKMS. Firmware 5.60.0 extracted from Apple's macOS 10.12.6 update into `/usr/lib/firmware/facetimehd/`. Shows up as `/dev/video0` and in PipeWire.

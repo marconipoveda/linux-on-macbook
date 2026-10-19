@@ -16,7 +16,7 @@ run yourself.
 | Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | ❔ |
 | Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
 | Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ❔ |
-| Bluetooth | ⚠️ [patched, verifying](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
+| Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
 | Audio | ❔ | ❔ |
 | USB-C data after sleep | ❌ | n/a |
 
