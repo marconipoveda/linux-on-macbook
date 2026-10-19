@@ -16,8 +16,8 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Trackpad | Apple SPI Force Touch | applespi | 🔧 | Mac-style via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad): tap-to-click off, two-finger right-click, scroll factor 2 (hwdb), adaptive at speed 0.4, macOS cursor. No haptics. Can come back garbled after resume until `applespi` is reloaded (fixed by the sleep hook) |
 | Keyboard backlight | `spi::kbd_backlight` | applespi | ✅ | |
 | Audio (speakers / mic / jack) | Cirrus Logic CS8409 / CS42L83 | snd_hda_codec_cs8409 | ❔ | Codec detected and PipeWire sink present. Upstream support for this model has been incomplete |
-| Wi-Fi | Broadcom BCM4350 `14e4:43a3` | brcmfmac | ⚠️ | Connects. Board-specific NVRAM/CLM files are missing. If `broadcom-sta` (wl) is installed, remove it: it fails to load and taints the kernel |
-| Bluetooth | Broadcom BCM43xx over UART (ACPI `BCM2E7C`) | hci_uart_bcm | ❌ | `hci0` comes up with address `00:00:00:00:00:00`, "No default controller". In progress |
+| Wi-Fi | Broadcom BCM4350 `14e4:43a3` | brcmfmac | ✅ | Works on brcmfmac. Board-specific NVRAM/CLM files are missing (normal). A leftover `broadcom-sta` (wl) crashed every boot and was removed with [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi) |
+| Bluetooth | Broadcom BCM4350C0 over UART (ACPI `BCM2E7C`) | hci_uart_bcm (patched, DKMS) | ⚠️ | Intermittent with the stock driver (~1 in 3 boots fail, `0xfc18 tx timeout`). Patched driver via [macbook-bluetooth](../plugins/macbook-linux/skills/macbook-bluetooth): 4 ok / 1 fail so far, all ok since wl was removed. Still verifying. For Bluetooth audio, use 5 GHz Wi-Fi |
 | Webcam | FaceTime HD `14e4:1570` | facetimehd (DKMS) | 🔧 | Works with the out-of-tree driver and extracted firmware: 1296×736 at 30 fps, via [facetimehd-webcam](../plugins/macbook-linux/skills/facetimehd-webcam) |
 | Thunderbolt 3 / USB-C | Intel Alpine Ridge JHL6540 | thunderbolt, xhci_hcd | ⚠️ | Charging always works. USB-C **data** stops after the first sleep until reboot, because Apple firmware powers the controller off. A PCI rescan does not bring it back. Unsolved |
 | Fans / sensors (SMC) | Apple SMC | applesmc | ⚠️ | Readable. No fan daemon by default (`mbpfan` optional) |
@@ -34,6 +34,9 @@ Applied with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) 
 - a boot-time service that leaves only `LID0` and `EC` enabled in `/proc/acpi/wakeup` (XHC1/2, RP01/05/09/10, ARPT and SPIT disabled)
 - a `system-sleep` hook that reloads `applespi` after resume and re-applies the wake settings
 
+### Bluetooth (in progress, 2026-10-18)
+Patched `hci_uart` (Apple BTLP wake call removed), installed through DKMS. Failures happen more after warm reboots than after power-offs. Audio tips ("Connect" button = disconnected, `Stream End Point in Use` → reconnect, 2.4 GHz coexistence) are in the skill's `references/audio.md`.
+
 ### Webcam (verified 2026-10-18)
 `facetimehd` 0.7.2 via DKMS. Firmware 5.60.0 extracted from Apple's macOS 10.12.6 update into `/usr/lib/firmware/facetimehd/`. Shows up as `/dev/video0` and in PipeWire.
 
@@ -47,4 +50,5 @@ keyd 2.5 with the [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-k
 - `ACPI ... _OSC/_PDC AE_ALREADY_EXISTS`, `\_SB.OSCP AE_NOT_FOUND`: Apple firmware quirks, harmless
 - `thunderbolt: device links to tunneled native ports are missing!`: informational
 - `nvme0n2` partition table warning: Apple's 8K namespace, harmless
-- brcmfmac `Direct firmware load ... MacBookPro13,1.txt failed`: missing board NVRAM, see Wi-Fi
+- brcmfmac `Direct firmware load ... MacBookPro13,1.txt failed`: missing board NVRAM, see Wi-Fi (harmless)
+- `Bluetooth: hci0: unknown advertising packet type`: printed while scanning, harmless

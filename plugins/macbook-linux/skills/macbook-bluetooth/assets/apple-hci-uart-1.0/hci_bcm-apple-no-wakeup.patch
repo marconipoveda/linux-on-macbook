@@ -1,0 +1,22 @@
+--- a/drivers/bluetooth/hci_bcm.c	2026-04-12 14:48:06.000000000 -0600
++++ b/drivers/bluetooth/hci_bcm.c	2026-10-18 11:24:47.359285799 -0600
+@@ -281,10 +281,6 @@
+ 	if (err)
+ 		goto err_txco_clk_disable;
+ 
+-	err = dev->set_device_wakeup(dev, powered);
+-	if (err)
+-		goto err_revert_shutdown;
+-
+ 	if (!powered && dev->res_enabled) {
+ 		clk_disable_unprepare(dev->txco_clk);
+ 		clk_disable_unprepare(dev->lpo_clk);
+@@ -304,8 +300,6 @@
+ 
+ 	return 0;
+ 
+-err_revert_shutdown:
+-	dev->set_shutdown(dev, !powered);
+ err_txco_clk_disable:
+ 	if (powered && !dev->res_enabled)
+ 		clk_disable_unprepare(dev->txco_clk);

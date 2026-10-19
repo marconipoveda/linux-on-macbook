@@ -15,8 +15,8 @@ run yourself.
 | macOS cursor | 🔧 [apple_cursor](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
 | Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | ❔ |
 | Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
-| Wi-Fi | ⚠️ | ❔ |
-| Bluetooth | ❌ in progress | ❔ |
+| Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ❔ |
+| Bluetooth | ⚠️ [patched, verifying](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
 | Audio | ❔ | ❔ |
 | USB-C data after sleep | ❌ | n/a |
 
@@ -27,12 +27,13 @@ Each model page has the full component table, the hardware IDs, and the kernel l
 | Skill | What it does |
 |---|---|
 | [macbook-hardware-scan](plugins/macbook-linux/skills/macbook-hardware-scan) | Scans a Mac and writes its model page: what works, what doesn't, which fix to use |
+| [macbook-bluetooth](plugins/macbook-linux/skills/macbook-bluetooth) | BCM UART Bluetooth that fails at boot (patched hci_uart via DKMS, boot checker), plus speaker/headphone troubleshooting |
+| [macbook-wifi](plugins/macbook-linux/skills/macbook-wifi) | Broadcom Wi-Fi: brcmfmac vs wl, removing a crashing broadcom-sta, firmware messages |
 | [macbook-sleep](plugins/macbook-linux/skills/macbook-sleep) | Suspend/resume: NVMe and Thunderbolt D3cold, wake sources, s2idle, resume hooks, one fix at a time |
 | [mac-keyboard-shortcuts](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | Cmd+C/V, Cmd+Tab, Cmd+Space, Option+arrows… on any distro and desktop, using keyd |
 | [facetimehd-webcam](plugins/macbook-linux/skills/facetimehd-webcam) | FaceTime HD camera (2013–2017 Macs): facetimehd driver via DKMS + firmware from Apple's update |
 | [mac-trackpad](plugins/macbook-linux/skills/mac-trackpad) | No accidental tap-clicks, two-finger right-click, pointer speed, slower two-finger scrolling (GNOME has no setting), browser glide, macOS cursor |
 
-Coming next: Bluetooth.
 
 ## Install (Claude Code)
 
