@@ -17,7 +17,8 @@ run yourself.
 | Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
 | Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ❔ |
 | Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
-| Audio (speakers, mic) | ✅ | ❔ |
+| Audio: speakers, internal mic, headphones | ✅ | ❔ |
+| Audio: headset mic (jack) | ❌ driver limitation | ❔ |
 | USB-C data after sleep | ❌ | n/a |
 
 Each model page has the full component table, the hardware IDs, and the kernel log notes.

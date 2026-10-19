@@ -15,7 +15,7 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Keyboard | Apple SPI Keyboard (ACPI APP000D) | applespi | ✅ | Mac-style shortcuts: 🔧 [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-keyboard-shortcuts) |
 | Trackpad | Apple SPI Force Touch | applespi | 🔧 | Mac-style via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad): tap-to-click off, two-finger right-click, scroll factor 2 (hwdb), adaptive at speed 0.4, macOS cursor. No haptics. Can come back garbled after resume until `applespi` is reloaded (fixed by the sleep hook) |
 | Keyboard backlight | `spi::kbd_backlight` | applespi | ✅ | |
-| Audio (speakers / mic / jack) | Cirrus Logic CS8409 / CS42L83 | snd_hda_codec_cs8409 | ✅ | Verified 2026-10-18 on kernel 7.0: both speakers with correct left/right, internal mic records clearly. Headphone jack and external mic not tested yet. A short click or peak when the mic opens is normal |
+| Audio (speakers / mic / jack) | Cirrus Logic CS8409 / CS42L83 | snd_hda_codec_cs8409 | ⚠️ | Verified 2026-10-18 on kernel 7.0: both speakers (correct left/right), internal mic, and **headphone output** (auto-switch on plug-in) work. **Headset mic does not**: it's detected, but records pure digital silence, because the kernel driver can't enable its capture switch (`patch_cs8409 NOT FOUND trying APPLE`, generic fallback). Workaround: pick *Internal Microphone* in Settings → Sound while headphones are plugged in, or use a USB or Bluetooth mic |
 | Wi-Fi | Broadcom BCM4350 `14e4:43a3` | brcmfmac | ✅ | Works on brcmfmac. Board-specific NVRAM/CLM files are missing (normal). A leftover `broadcom-sta` (wl) crashed every boot and was removed with [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi) |
 | Bluetooth | Broadcom BCM4350C0 over UART (ACPI `BCM2E7C`) | hci_uart_bcm (patched, DKMS) | 🔧 | Stock driver failed ~1 in 3 boots (`0xfc18 tx timeout`). Fixed with the patched driver from [macbook-bluetooth](../plugins/macbook-linux/skills/macbook-bluetooth) plus removing broadcom-sta (wl) with [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi): 5 of 5 clean boots since. For Bluetooth audio, use 5 GHz Wi-Fi |
 | Webcam | FaceTime HD `14e4:1570` | facetimehd (DKMS) | 🔧 | Works with the out-of-tree driver and extracted firmware: 1296×736 at 30 fps, via [facetimehd-webcam](../plugins/macbook-linux/skills/facetimehd-webcam) |
@@ -49,6 +49,7 @@ keyd 2.5 with the [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-k
 ## Kernel log notes
 - `ACPI ... _OSC/_PDC AE_ALREADY_EXISTS`, `\_SB.OSCP AE_NOT_FOUND`: Apple firmware quirks, harmless
 - `thunderbolt: device links to tunneled native ports are missing!`: informational
+- `snd_hda_intel: Primary patch_cs8409 NOT FOUND trying APPLE`: no model-specific profile, generic Apple setup (headset mic unsupported). Community driver [davidjo/snd_hda_macbookpro](https://github.com/davidjo/snd_hda_macbookpro) exists, but its own README says headset/internal mic input is incomplete
 - `nvme0n2` partition table warning: Apple's 8K namespace, harmless
 - brcmfmac `Direct firmware load ... MacBookPro13,1.txt failed`: missing board NVRAM, see Wi-Fi (harmless)
 - `Bluetooth: hci0: unknown advertising packet type`: printed while scanning, harmless
