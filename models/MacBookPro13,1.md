@@ -1,6 +1,6 @@
 # MacBookPro13,1 — MacBook Pro 13" Late 2016 (two Thunderbolt 3 ports, function keys)
 
-Last scanned: 2026-10-18 · Distro: Ubuntu 26.04.1 LTS · Kernel: 7.0.0-38-generic · Desktop: GNOME 50 (Wayland)
+Last scanned: 2026-10-19 · Distro: Ubuntu 26.04.1 LTS · Kernel: 7.0.0-38-generic · Desktop: GNOME 50 (Wayland)
 
 ## Device status
 
@@ -24,6 +24,7 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 | Ambient light sensor | via applesmc | applesmc | ⚠️ | Readable, not wired into auto-brightness |
 | Battery | bq20z451 | ACPI | ✅ | Health and cycle count readable |
 | Suspend / resume | | | 🔧 | **s2idle only**; deep S3 never resumes reliably. Needs NVMe and Thunderbolt kept out of D3cold, and wake sources limited to the lid and EC. To wake, open the lid, then press the power button. [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) |
+| Hibernation | swap file on NVMe | swsusp (lzo) | 🔧 | Works after unblocking it in Ubuntu's polkit and unloading **brcmfmac** around hibernation (otherwise the restore aborts on a Wi-Fi D3 timeout). Lid on battery = sleep, then hibernate after 10 min (s2idle draws ~5 W). About 35 s to come back. [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) |
 
 ## Known issues and fixes
 
@@ -33,6 +34,16 @@ Applied with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) 
 - udev rules keeping the NVMe and the Thunderbolt bridges out of D3cold
 - a boot-time service that leaves only `LID0` and `EC` enabled in `/proc/acpi/wakeup` (XHC1/2, RP01/05/09/10, ARPT and SPIT disabled)
 - a `system-sleep` hook that reloads `applespi` after resume and re-applies the wake settings
+
+### Hibernation and suspend-then-hibernate (verified 2026-10-19)
+s2idle draws about 5 W, so a night asleep emptied the battery. Now, with the [macbook-sleep](../plugins/macbook-linux/skills/macbook-sleep) skill's `hibernate.sh`:
+- `/swap.img` grown to 8 GiB; `resume=` + `resume_offset=` on the kernel command line; dracut `resume` module
+- polkit rule overriding Ubuntu's "hibernate disabled by default"
+- a `system-sleep` hook that unloads `brcmfmac` before hibernating and reloads it after. Without it the restore aborts (`brcmf_pcie_pm_enter_D3: Timeout ... quiesce of devices aborted`), and Wi-Fi and the desktop hang
+- `HandleLidSwitch=suspend-then-hibernate`, `HibernateDelaySec=10min`, `HibernateOnACPower=no`; `HandleLidSwitchExternalPower=suspend`
+- `GRUB_RECORDFAIL_TIMEOUT=0`, so the start after a hibernation doesn't wait 30 s on a hidden menu
+
+The RTC alarm wakes the Mac from s2idle (needed for the delay). Coming back from hibernation takes about 35 s from the power button.
 
 ### Bluetooth (verified 2026-10-18)
 Two changes together: the patched `hci_uart` (Apple BTLP wake call removed) through DKMS, and removing broadcom-sta (wl). After both: 5 of 5 clean boots, including warm restarts. Five boots can't tell which change mattered more: the patch alone gave 1 failure, in a boot where wl crashed. Before: about 1 in 3 boots failed, more often after warm reboots. Audio tips ("Connect" button = disconnected, `Stream End Point in Use` → reconnect, 2.4 GHz coexistence) are in the skill's `references/audio.md`.

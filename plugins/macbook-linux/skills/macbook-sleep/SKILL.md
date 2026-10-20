@@ -1,6 +1,6 @@
 ---
 name: macbook-sleep
-description: Diagnose and fix suspend/resume on Linux on Intel Macs. Covers a Mac that never wakes up after closing the lid (black screen, has to be force-rebooted), wakes itself seconds after suspending, takes a minute to resume, wakes repeatedly in a bag, drains battery while asleep, or comes back with a broken trackpad or dead USB-C ports. Uses udev D3cold rules, ACPI wake-source control, s2idle vs deep sleep, and resume hooks, applied one at a time and tested. Use this whenever someone on Linux on a MacBook mentions suspend, sleep, lid close, resume, hibernate, "won't wake up", or battery dying overnight.
+description: Diagnose and fix suspend/resume on Linux on Intel Macs. Covers a Mac that never wakes up after closing the lid (black screen, has to be force-rebooted), wakes itself seconds after suspending, takes a minute to resume, wakes repeatedly in a bag, drains battery while asleep, or comes back with a broken trackpad or dead USB-C ports. Uses udev D3cold rules, ACPI wake-source control, s2idle vs deep sleep, resume hooks, and hibernation with suspend-then-hibernate (swap file resume offset, Ubuntu polkit unblock, drivers that break hibernation), applied one at a time and tested. Use this whenever someone on Linux on a MacBook mentions suspend, sleep, lid close, resume, hibernate, suspend-then-hibernate, "hibernate is greyed out / not allowed", "won't wake up", a warm Mac in the bag, or battery dying overnight.
 ---
 
 # Suspend and resume on Intel Macs
@@ -53,9 +53,28 @@ Notes on the fixes:
 - **On s2idle, opening the lid alone may not wake the Mac.** On MacBookPro13,1 you have to open the lid *and* press the power button. Tell the person rather than promising lid wake.
 - **Don't install TLP, auto-cpufreq, laptop-mode-tools or `powertop --auto-tune` as a sleep fix.** They change dozens of settings at once and make it impossible to tell what helped.
 
-## 3. Battery while asleep (optional)
+## 3. Battery while asleep, and hibernation
 
-s2idle uses more power than S3. To measure it, run `bash scripts/sleep-drain.sh start` on battery before closing the lid, and `bash scripts/sleep-drain.sh stop` after waking, after a few hours or overnight. Under about 1.5 %/h is fine. Much more than that is a reason to look at `HandleLidSwitch=suspend-then-hibernate`, which needs a swap area at least as big as RAM and a `resume=` kernel parameter. That's a separate project: discuss it with the person first.
+s2idle uses more power than S3: on MacBookPro13,1 about 5 W, enough to empty the battery overnight and make the Mac warm in a bag. To measure it, run `bash scripts/sleep-drain.sh start` on battery before closing the lid, and `bash scripts/sleep-drain.sh stop` after waking. Under about 1.5 %/h is fine. More than that is the case for **suspend-then-hibernate**: on battery the lid sleeps as usual, and after a delay the Mac wakes by itself, saves memory to swap and powers off. On the charger it only sleeps.
+
+Discuss it with the person first. After hibernation, the Mac takes about 30 s to come back (power button, firmware, restore) instead of an instant wake. The delay decides how often that happens: the person on 13,1 picked 10 minutes.
+
+Use `scripts/hibernate.sh`, one step at a time, in this order:
+
+1. **`--status`**: shows lockdown, swap, RAM, resume settings and what logind allows. Kernel lockdown (Secure Boot) forbids hibernation outright; say so and stop.
+2. **`--setup`**, then reboot. It grows a swap file to more than RAM (or warns if a partition is too small) and works out `resume=` and `resume_offset=`. It adds them through `/etc/default/grub.d` and makes the initramfs (dracut or initramfs-tools) include resume support. After the reboot, `--status` must show a resume device other than `0:0`. `PM: Image not found (code -22)` on a normal boot is expected: it only means there was nothing to restore.
+3. **`--allow`**, on Ubuntu. Ubuntu forbids hibernation in polkit (`com.ubuntu.desktop.rules`), so logind reports `CanHibernate` as `no` even when everything else is ready. The override in `/etc/polkit-1/rules.d` applies at once. `na` instead of `no` means a kernel or swap problem, not policy.
+4. **`--test`**: writes the image and restores it straight away, with no power-off and kernel logs kept. Use this instead of `systemctl hibernate` for the first try. A real hibernation that fails loses every log line, and the person just sees the Mac turn off and later start fresh. Read the output:
+   - `Hibernation image restored successfully`: go on.
+   - `quiesce of devices aborted` / `freeze of devices aborted` with a driver name just above it: that driver breaks hibernation. On 13,1 it was **brcmfmac** (`brcmf_pcie_pm_enter_D3: Timeout`). That left Wi-Fi dead and the desktop hanging until a forced restart. Fix with `--unload "brcmfmac_wcc brcmfmac"` (the hook unloads it before hibernating and reloads it after), then `--test` again.
+   - No "Writing hibernation image" or "Image saving" lines at all: the image was never written. Check `--status` again.
+   - If the Mac hangs during the test, it's the same driver problem: hold the power button and look at the previous boot's journal (`journalctl -b -1 -k`). `--test` turns on `pm_debug_messages`, so the failing step shows up there.
+5. **A real `systemctl hibernate`**: the Mac should power off by itself and, after the power button, come back to the lock screen with the windows still open.
+6. **Check that the RTC can wake the Mac from sleep.** suspend-then-hibernate depends on it. Test it the way the lid would: `sudo rtcwake -m no -s 90 && systemctl suspend`. It should wake by itself after about 90 s. Don't use `rtcwake -m freeze`: it skips the desktop, so the screen stays on with the last picture. If keyboard wake is disabled (SPIT), that looks exactly like a frozen machine. Opening the lid wakes it.
+7. **`--lid 2min`**, then reboot, so logind reads the lid setting. Unplug the charger, close the lid for 4 minutes and open it. The screen should stay dark until the power button is pressed. Then set the real delay with `--lid 10min` (or whatever the person picks); delay changes need no reboot.
+8. **`--grub-no-wait`**, on Ubuntu GRUB. A hibernation leaves `recordfail` set, and the next start would wait 30 s on a hidden boot menu. This sets `GRUB_RECORDFAIL_TIMEOUT=0`; Esc during start-up still opens the menu.
+
+Explain the delay plainly: it's how long the Mac stays in instant-wake sleep after the lid closes. It's not how long it takes to come back. People mix the two up.
 
 ## 4. Known unsolved
 
@@ -63,4 +82,4 @@ On 2016–2017 MacBook Pros, **USB-C data (Thunderbolt xHCI) dies after the firs
 
 ## Undo
 
-`sudo bash scripts/uninstall.sh`, then reboot. It removes the rules, the service, the hook, the config and the GRUB snippet.
+`sudo bash scripts/uninstall.sh`, then reboot. It removes the rules, the service, the hooks, the config, the hibernation settings (polkit rule, lid and sleep config, resume parameters) and the GRUB snippets. It leaves the swap file alone.

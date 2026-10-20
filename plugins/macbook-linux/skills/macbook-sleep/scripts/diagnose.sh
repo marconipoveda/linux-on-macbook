@@ -30,3 +30,9 @@ done
 journalctl -b 0 -o short-monotonic --no-pager 2>/dev/null | grep -E 'PM: suspend (entry|exit)|ACPI: PM: Waking up from system sleep|Wakeup from|applespi: Received corrupted' | tail -n 12 | sed 's/^/   this boot: /'
 echo "== Slow resume devices (this boot)"
 journalctl -b 0 -k --no-pager 2>/dev/null | grep -E 'Refused to change power state|D3cold to D0|device inaccessible|PM: .* took [0-9]{4,}' | tail -n 8 | sed 's/^/   /'
+echo "== Hibernation"
+echo "   resume device: $(cat /sys/power/resume 2>/dev/null) offset $(cat /sys/power/resume_offset 2>/dev/null)   swap: $(swapon --show=NAME,SIZE --noheadings 2>/dev/null | tr -s ' ' | paste -sd,)"
+for a in CanHibernate CanSuspendThenHibernate; do
+  echo "   logind $a: $(busctl call org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager $a 2>/dev/null | awk '{print $2}')"
+done
+journalctl -b 0 -o cat --no-pager 2>/dev/null | grep -E 'Image not found|Hibernation image restored|Failed to load image|quiesce of devices aborted|freeze of devices aborted' | tail -n 4 | sed 's/^/   /'
