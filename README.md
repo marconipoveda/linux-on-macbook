@@ -8,16 +8,16 @@ run yourself.
 
 ✅ works out of the box · 🔧 works after a fix here · ⚠️ partial · ❌ not working · ❔ not tested yet
 
-| Component | [MacBookPro13,1](models/MacBookPro13,1.md)<br>13" 2016 | MacBookPro11,x<br>15" Mid 2015 |
+| Component | [MacBookPro13,1](models/MacBookPro13,1.md)<br>13" 2016 | [MacBookPro11,4](models/MacBookPro11,4.md)<br>15" Mid 2015 |
 |---|---|---|
-| Mac-style keyboard shortcuts | 🔧 [keyd](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | ❔ |
-| Trackpad: clicking, pointer and scroll speed | 🔧 [settings + scroll fix](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
+| Mac-style keyboard shortcuts | 🔧 [keyd](plugins/macbook-linux/skills/mac-keyboard-shortcuts) | 🔧 [keyd](plugins/macbook-linux/skills/mac-keyboard-shortcuts) |
+| Trackpad: clicking, pointer and scroll speed | 🔧 [settings + scroll fix](plugins/macbook-linux/skills/mac-trackpad) | 🔧 [clicking only](plugins/macbook-linux/skills/mac-trackpad); speeds fine by default |
 | macOS cursor | 🔧 [apple_cursor](plugins/macbook-linux/skills/mac-trackpad) | ❔ |
-| Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | ❔ |
-| Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
-| Hibernation (sleep, then hibernate on battery) | 🔧 [Wi-Fi unloaded + polkit unblock](plugins/macbook-linux/skills/macbook-sleep) | ❔ |
-| Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ❔ |
-| Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ❔ |
+| Webcam (FaceTime HD) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) | 🔧 [facetimehd](plugins/macbook-linux/skills/facetimehd-webcam) |
+| Suspend / resume | 🔧 [s2idle + fixes](plugins/macbook-linux/skills/macbook-sleep) | ✅ deep sleep, no fixes; wake takes ~15 s (firmware) |
+| Hibernation (sleep, then hibernate on battery) | 🔧 [Wi-Fi unloaded + polkit unblock](plugins/macbook-linux/skills/macbook-sleep) | not needed: 0.1 %/h asleep |
+| Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ✅ brcmfmac |
+| Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ✅ USB (btusb), no patch needed |
 | Audio: speakers, internal mic, headphones | ✅ | ❔ |
 | Audio: headset mic (jack) | ❌ driver limitation, use a USB headset (✅) | ❔ |
 | USB-C data after sleep | ❌ | n/a |

@@ -15,9 +15,10 @@
 | `pcieport 0000:05:0x.0: Unable to change power state from D3cold to D0` | Thunderbolt bridges powered off. `--thunderbolt` speeds resume up, but USB-C data may still die |
 | `applespi: Received corrupted packet` after resume | `--applespi-hook` |
 | resume works but `nvme ... timeout` / I/O errors | NVMe D3cold again. Check `d3cold_allowed` is 0 after boot (the udev rule matches by ID) |
+| every wake takes 10–20 s (lid, power button and RTC alike), `PM: suspend exit` under 2 s after `Waking up` | firmware S3 resume time, not Linux. Seen on MacBookPro11,4 with an aftermarket NVMe. Nothing to fix in Linux; s2idle avoids it but drains more |
 | deep fails even with all of the above | use s2idle. Some Mac firmware never completes S3 resume under Linux |
 
 ## Model generations (rough guide)
-- **2015 and earlier** (SATA/AHCI or Samsung NVMe, USB keyboard): deep sleep usually works out of the box. If it wakes immediately, `XHC1` or `LID0` with the lid open is the usual cause.
+- **2015 and earlier** (SATA/AHCI or Samsung NVMe, USB keyboard): deep sleep usually works out of the box. If it wakes immediately, `XHC1` or `LID0` with the lid open is the usual cause. MacBookPro11,4: no fixes needed, 0.1 %/h asleep, but ~15 s firmware wake.
 - **2016–2017 MacBook Pro** (Apple S3X NVMe, SPI keyboard, Thunderbolt 3): everything in the fix table may be needed. See mbp-2016-linux.
 - **T2 (2018+)**: different stack (`apple-bce`). Sleep support depends on the t2linux kernel; see t2linux.org instead.

@@ -51,6 +51,7 @@ After each fix, test with an actual suspend: close the lid for at least 2 minute
 Notes on the fixes:
 - **Wake sources** live in `/etc/macbook-sleep/wakeup.conf`. They're applied at boot by `macbook-wakeup.service` and again after every resume by the sleep hook, because reloading drivers re-enables their own wake flags. Writing a name to `/proc/acpi/wakeup` *toggles* it, which is why the helper checks the state first. Never echo names there by hand in a loop.
 - **On s2idle, opening the lid alone may not wake the Mac.** On MacBookPro13,1 you have to open the lid *and* press the power button. Tell the person rather than promising lid wake.
+- **A wake that always takes 10–20 s, whatever wakes it** (lid, power button, RTC alarm), with Linux's own resume under 2 s, is the firmware. Measure it before chasing drivers: set an RTC alarm with `rtcwake -m no`, turn on `/sys/power/pm_print_times`, suspend with the lid open and time the screen against the alarm. On MacBookPro11,4 (aftermarket NVMe) it's ~15 s and shows up as a 14–18 s jump in kernel timestamps right after `Filesystems sync`. Linux can't shorten it; s2idle skips it at the cost of much higher drain.
 - **Don't install TLP, auto-cpufreq, laptop-mode-tools or `powertop --auto-tune` as a sleep fix.** They change dozens of settings at once and make it impossible to tell what helped.
 
 ## 3. Battery while asleep, and hibernation
