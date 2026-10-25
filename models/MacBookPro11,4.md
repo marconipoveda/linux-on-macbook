@@ -10,16 +10,17 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 |---|---|---|---|---|
 | CPU | Intel Core i7-4770HQ (Crystal Well / Haswell) | intel_cpufreq (schedutil) | ✅ | thermald and power-profiles-daemon active |
 | GPU | Intel Iris Pro 5200 `8086:0d26` | i915 | ✅ | No discrete GPU on 11,4 (11,5 has the AMD one). `apple_gmux` loads but has nothing to switch |
-| Display / backlight | 2880×1800 eDP | i915, acpi_video | ❔ | Backlight through `acpi_video0` (0–100). Brightness keys not tested yet |
+| Display / backlight | 2880×1800 eDP | i915, acpi_video | ✅ | Backlight through `acpi_video0` (0–100). Brightness keys verified 2026-10-25 |
 | Storage | Samsung 970 EVO 1 TB NVMe `144d:a808` (aftermarket, via adapter) | nvme | ✅ | Not Apple's original SSD. Watch it during sleep tests: third-party NVMe in these Macs can be a sleep/resume issue |
 | Keyboard | Apple Internal Keyboard `05ac:0274` (USB) | hid_apple | ✅ | USB generation (pre-2016). Mac-style shortcuts: 🔧 [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-keyboard-shortcuts) |
 | Trackpad | Force Touch trackpad `05ac:0274` (USB) | bcm5974 | 🔧 | Mac-style clicking via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad): tap-to-click off, `click-method fingers`. Pointer and scroll speed fine at GNOME defaults (speed 0, natural scroll), no hwdb scroll fix needed, unlike 13,1. No haptics. Display at 125 % scale |
-| Keyboard backlight | `smc::kbd_backlight` | applesmc | ❔ | Device present; keys not tested |
-| Audio (speakers / mic / jack) | Cirrus Logic CS4208 `8086:8c20` | snd_hda_codec_cs420x | ❔ | Codec bound with a specific driver (not generic fallback). Speakers, internal mic, headphones and headset mic to be tested |
+| Keyboard backlight | `smc::kbd_backlight` | applesmc | ✅ | Verified 2026-10-25: lights on, and the keyboard-brightness keys raise and lower it |
+| Audio (speakers / mic / jack) | Cirrus Logic CS4208 `8086:8c20` | snd_hda_codec_cs420x | ✅ | Verified 2026-10-25 via PipeWire: both speakers with correct left/right (`speaker-test -c 2 -t wav`), internal mic clear at about −20 to −30 dBFS speaking normally. Headphone jack: plug-in detected (`Headphone Jack` on), output switches to Headphones automatically, correct left/right, speakers muted. Headset mic (jack) not tested |
 | Wi-Fi | Broadcom BCM43602 `14e4:43ba` | brcmfmac | ✅ | No broadcom-sta/wl installed. Board-specific `.bin`/`.txt`/`clm_blob`/`txcap_blob` missing (normal); verified 5 GHz, 80 MHz, 540/1300 Mbit/s. [macbook-wifi](../plugins/macbook-linux/skills/macbook-wifi) |
 | Bluetooth | Broadcom `05ac:8290` over **USB** | btusb + btbcm | ✅ | 9 of 10 logged boots OK. The one failure (warm reboot) was `hci0: command 0x0c03 tx timeout` / `BCM: Reset failed (-110)`, not the UART `0xfc18` bug. The skill's patched `hci_uart` does **not** apply to this model |
 | Webcam | FaceTime HD `14e4:1570` | facetimehd (DKMS) | 🔧 | Works with the out-of-tree driver and extracted firmware, no reboot needed: `/dev/video0`, shows in PipeWire, 1280×720 test frame. Via [facetimehd-webcam](../plugins/macbook-linux/skills/facetimehd-webcam). Not yet tested across suspend |
-| Thunderbolt 2 / USB-A / HDMI | Intel Falcon Ridge DSL5520 `8086:156d`/`156c` | thunderbolt, xhci_hcd | ❔ | Bridge-window "failed to assign" messages at boot (no device attached). Hotplug of TB devices not tested |
+| HDMI | HDMI port, connector HDMI-A-3 on Iris Pro | i915 | ✅ | Verified 2026-10-25 with a Dell U2412M: 1920×1200, sharp picture, extended desktop with windows moving between screens. While plugging in, i915 logged `HPD interrupt storm detected on connector HDMI-A-3: switching from hotplug detection to polling`, so detection took a few seconds; harmless |
+| Thunderbolt 2 / USB-A | Intel Falcon Ridge DSL5520 `8086:156d`/`156c` | thunderbolt, xhci_hcd | ❔ | Bridge-window "failed to assign" messages at boot (no device attached). Thunderbolt/Mini DisplayPort hotplug not tested |
 | SD card reader | Apple `05ac:8406` (USB) | usb-storage | ❔ | Shows up as `sda` (0 B, no card). Insert a card to test |
 | Fans / sensors (SMC) | Apple SMC | applesmc | ✅ | Both fans readable at ~2000 rpm idle; SMC controls them, `mbpfan` not needed so far |
 | Ambient light sensor | via applesmc | applesmc | ⚠️ | Readable, not wired into auto-brightness |
