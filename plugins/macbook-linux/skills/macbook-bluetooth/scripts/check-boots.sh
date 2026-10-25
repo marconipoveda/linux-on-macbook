@@ -1,5 +1,5 @@
 #!/bin/bash
-# Bluetooth (BCM UART) result for each logged boot. Read-only, normal user.
+# Bluetooth (BCM, UART or USB) result for each logged boot. Read-only, normal user.
 # Usage: bash check-boots.sh ["YYYY-MM-DD HH:MM"]   only count boots starting after that time
 SINCE="${1:-0000}"
 ok=0; bad=0

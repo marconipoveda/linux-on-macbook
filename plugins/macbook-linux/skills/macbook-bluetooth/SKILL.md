@@ -11,6 +11,8 @@ Two kinds of problem show up here, and they need very different fixes:
 
 Tell them apart first: `timeout 5 bluetoothctl show`. A `Controller <real address>` with `Powered: yes` means case 2.
 
+**Check the transport before any driver work:** `lsusb | grep -i -E 'bluetooth|05ac:82'` and `ls -l /sys/class/bluetooth/hci0/device`. 2016–2017 MacBook Pros put Bluetooth on a UART (`hci_uart_bcm`, ACPI `BCM2E7C`), and sections 2–3 are about that. 2015 and earlier Macs put it on internal USB (`btusb`, e.g. `05ac:8290` on MacBookPro11,4): the hci_uart patch does nothing there, so don't install it. A USB controller that fails at boot logs `hci0: command 0x0c03 tx timeout` / `BCM: Reset failed (-110)`. Try `sudo modprobe -r btusb && sudo modprobe btusb`, otherwise a full power-off.
+
 ## 1. Measure before fixing
 
 On MacBookPro13,1 the stock driver was **intermittent**, not dead: across 35 logged boots it failed in about 1 of 3, more often after a warm reboot (7 of 16) than after a full power-off (2 of 8). One good or bad boot proves nothing, so count:
@@ -20,7 +22,7 @@ bash scripts/check-boots.sh                       # every logged boot: ok / FAIL
 bash scripts/check-boots.sh "2026-10-18 18:40"    # only boots since a change
 ```
 
-A FAIL boot logs `hci0: command 0xfc18 tx timeout` and `BCM: failed to write update baudrate (-110)`. `BCM: firmware Patch file not found` is normal: the chip runs from ROM, and no `.hcd` is needed.
+On UART models a FAIL boot logs `hci0: command 0xfc18 tx timeout` and `BCM: failed to write update baudrate (-110)`. `BCM: firmware Patch file not found` is normal: the chip runs from ROM, and no `.hcd` is needed.
 
 Also check for the proprietary **`broadcom-sta` (`wl`)** driver: `dpkg -l | grep broadcom-sta`. The Wi-Fi and Bluetooth are one BCM4350 chip, and `wl` crashes on these models and can leave the chip unresponsive for both. In the one boot where both Wi-Fi and Bluetooth failed, `wl` had crashed first. Remove it first with the macbook-wifi skill, if Wi-Fi already runs on `brcmfmac`.
 

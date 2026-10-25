@@ -36,7 +36,9 @@ sleep 3
 echo "== kernel log"; journalctl -k --since "-1min" --no-pager | grep -iE 'facetimehd|fthd' | tail -n 15 || true
 echo "== video devices"; ls -l /dev/video* || true
 dkms status -m facetimehd
-if ls /dev/video* >/dev/null 2>&1 && journalctl -k --since "-1min" --no-pager | grep -q 'Loaded firmware'; then
+# Capture first: with pipefail, `journalctl | grep -q` fails when grep exits early (SIGPIPE).
+klog=$(journalctl -k --since "-1min" --no-pager)
+if ls /dev/video* >/dev/null 2>&1 && grep -q 'Loaded firmware' <<<"$klog"; then
   echo "RESULT: OK"
 else
   echo "RESULT: driver installed but no camera yet (reboot once, then check again)"
