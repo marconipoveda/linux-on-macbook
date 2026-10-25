@@ -10,7 +10,7 @@ Legend: ✅ works out of the box · 🔧 works after a fix (linked) · ⚠️ pa
 |---|---|---|---|---|
 | CPU | Intel Core i7-4770HQ (Crystal Well / Haswell) | intel_cpufreq (schedutil) | ✅ | thermald and power-profiles-daemon active |
 | GPU | Intel Iris Pro 5200 `8086:0d26` | i915 | ✅ | No discrete GPU on 11,4 (11,5 has the AMD one). `apple_gmux` loads but has nothing to switch |
-| Display / backlight | 2880×1800 eDP | i915, acpi_video | ❔ | Backlight through `acpi_video0` (0–100). Brightness keys not tested yet |
+| Display / backlight | 2880×1800 eDP | i915, acpi_video | ✅ | Backlight through `acpi_video0` (0–100). Brightness keys verified 2026-10-25 |
 | Storage | Samsung 970 EVO 1 TB NVMe `144d:a808` (aftermarket, via adapter) | nvme | ✅ | Not Apple's original SSD. Watch it during sleep tests: third-party NVMe in these Macs can be a sleep/resume issue |
 | Keyboard | Apple Internal Keyboard `05ac:0274` (USB) | hid_apple | ✅ | USB generation (pre-2016). Mac-style shortcuts: 🔧 [mac-keyboard-shortcuts](../plugins/macbook-linux/skills/mac-keyboard-shortcuts) |
 | Trackpad | Force Touch trackpad `05ac:0274` (USB) | bcm5974 | 🔧 | Mac-style clicking via [mac-trackpad](../plugins/macbook-linux/skills/mac-trackpad): tap-to-click off, `click-method fingers`. Pointer and scroll speed fine at GNOME defaults (speed 0, natural scroll), no hwdb scroll fix needed, unlike 13,1. No haptics. Display at 125 % scale |
