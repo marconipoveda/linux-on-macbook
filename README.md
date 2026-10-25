@@ -18,7 +18,7 @@ run yourself.
 | Hibernation (sleep, then hibernate on battery) | 🔧 [Wi-Fi unloaded + polkit unblock](plugins/macbook-linux/skills/macbook-sleep) | not needed: 0.1 %/h asleep |
 | Wi-Fi | ✅ brcmfmac ([remove wl](plugins/macbook-linux/skills/macbook-wifi)) | ✅ brcmfmac |
 | Bluetooth | 🔧 [patched driver + wl removed](plugins/macbook-linux/skills/macbook-bluetooth) | ✅ USB (btusb), no patch needed |
-| Audio: speakers, internal mic, headphones | ✅ | ❔ |
+| Audio: speakers, internal mic, headphones | ✅ | ✅ speakers + internal mic; headphones ❔ |
 | Audio: headset mic (jack) | ❌ driver limitation, use a USB headset (✅) | ❔ |
 | USB-C data after sleep | ❌ | n/a |
 
